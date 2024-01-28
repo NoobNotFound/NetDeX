@@ -13,6 +13,11 @@ namespace Solitaire.Games.Omi.Core.Helpers
     {
         private static Random rng = new Random();
 
+        public static void AddRange<T>(this ObservableCollection<T> cll, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+                cll.Add(item);
+        }
         public static IList<T> Shuffle<T>(this IList<T> list)
         {
             int n = list.Count;

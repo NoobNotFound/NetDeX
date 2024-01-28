@@ -26,12 +26,6 @@ public class Game
     public Game()
     {
         Engine = new Engine(Enums.Players.Four);
-        Engine.CurrentRound.CollectionChanged += CurrentDeck_Changed;
-    }
-
-    private void CurrentDeck_Changed(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        throw new NotImplementedException();
     }
 
     public void Host(IPAddress ip,int port)
@@ -59,6 +53,9 @@ public class Game
         Client.Events.Connected += ClientConnected;
         Client.Events.Disconnected += ClientDisconnected;
         Client.Events.DataReceived += DataReceived;
+
+        Engine = new Engine(Enums.Players.Four);
+        Engine.Initialize();
 
         Client.Connect();
     }
@@ -120,10 +117,9 @@ public class Game
                 else if(data.Code == ActionCodes.ShuffleCards)
                 {
                     var d = data.Data.DeserializeJSON<(int p, int times)>();
-                    if(d.p == Engine.WhoShared)
+                    if(d.p == Engine.Data.WhoShared)
                     {
                         Engine.Shuffle(d.times);
-                        await BroadcastAll(new Action(ActionCodes.ShuffleCards, d.times.ToString(),false));
                     }
                 }
             }
@@ -133,6 +129,38 @@ public class Game
                 {
                     data.Data.DeserializeJSON<(string ipPort, int place)[]>();
                     PlayersUpdated?.Invoke(this, new());
+                }
+                else if(data.Code == ActionCodes.TeamsWithPlayers)
+                {
+                    var D = data.Data.DeserializeJSON<Team[]>() ?? Engine.Teams;
+                    for (int i = 0; i < 1; i++)
+                    {
+                        Engine.Teams[i].Draws = D[0].Draws;
+                        Engine.Teams[i].Loses = D[0].Loses;
+                        Engine.Teams[i].Name = D[0].Name;
+                        Engine.Teams[i].Wins = D[0].Wins;
+
+                        int x = 0;
+                        foreach (var d in Engine.Teams[i].Players)
+                        {
+                            d.Loses = D[i].Players[x].Loses;
+                            d.Wins = D[i].Players[x].Wins;
+                            d.Name = D[i].Players[x].Name;
+                            
+                            d.Deck.Clear();
+                            d.Deck.AddRange(D[i].Players[x].Deck);
+                            x++;
+                        }
+
+                        Engine.Teams[i].TradesGiven.Clear();
+                        Engine.Teams[i].TradesGiven.AddRange(D[i].TradesGiven);
+
+                        Engine.Teams[i].TradesHave.Clear();
+                        Engine.Teams[i].TradesHave.AddRange(D[i].TradesHave);
+
+                        Engine.Teams[i].RoundsWon.Clear();
+                        Engine.Teams[i].RoundsWon.AddRange(D[i].RoundsWon);
+                    }
                 }
             }
         }
@@ -144,6 +172,7 @@ public class Game
         
         throw new NotImplementedException();
     }
+
 
     private async void ClientConnected(object? sender, ConnectionEventArgs e)
     {

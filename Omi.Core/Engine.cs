@@ -6,33 +6,21 @@ using System.Diagnostics;
 using System.Security;
 
 namespace Solitaire.Games.Omi.Core;
-public class Engine(Players playersCount)
+public class Engine(Players PlayersCount)
 {
+    public EngineData Data { get; internal set; } = new(PlayersCount);
     public event EventHandler<(bool isDraw, Guid TeamWon)>? GameEnded;
     public event EventHandler<Guid>? MainGameEnded;
-    public Values MinValue => PlayersCount == Enums.Players.Four ? Values.Seven : Values.Eight;
-    public Players PlayersCount { get; private set; } = playersCount;
-    public Team[] Teams { get; private set; } = [];
-
-    public ObservableCollection<(Card[] round,Guid TeamWon,int PlayerWon)> OldRounds { get; private set; } = new();
-    public ObservableCollection<(Card card,int player)> CurrentRound { get; private set; } = new();
-    public ObservableCollection<((Card[] round,int PlayerWon)[], Guid TeamWon)> OldGames { get; private set; } = new();
-    public int CurrentPlayerPosition { get; private set; }
-
-    public int WhoSaidTrump { get; set; } = 1;
-    public int WhoShared => WhoSaidTrump == 1 ? (int)PlayersCount : WhoSaidTrump - 1;
-
-    public Types Trump { get; set; } = Types.Undefined;
-    public Types CurrentRoundType { get; internal set; } = Types.Undefined;
-    public Card[] UnSharedCards { get; private set; } = [];
+    public Values MinValue => Data.PlayersCount == Enums.Players.Four ? Values.Seven : Values.Eight;
+    public Team[] Teams { get; internal set; } = [];
 
     public bool IsInitialized { get; private set; } = false;
     public bool IsInGame { get; private set; } = false;
     public void Initialize()
     {
-        CurrentRound.Clear();
-        OldRounds.Clear();
-        if (PlayersCount == Enums.Players.Four)
+        Data.CurrentRound.Clear();
+        Data.OldRounds.Clear();
+        if (Data.PlayersCount == Enums.Players.Four)
         {
             Teams =
             [
@@ -65,9 +53,9 @@ public class Engine(Players playersCount)
     public void NewGame()
     {
         IsInGame = true;
-        CurrentPlayerPosition = WhoSaidTrump;
-        CurrentRound.Clear();
-        OldRounds.Clear();
+        Data.CurrentPlayerPosition = Data.WhoSaidTrump;
+        Data.CurrentRound.Clear();
+        Data.OldRounds.Clear();
         foreach (var item in Teams)
             item.RoundsWon.Clear();
         
@@ -84,11 +72,11 @@ public class Engine(Players playersCount)
             }
         }
 
-        Trump = Types.Undefined;
+        Data.Trump = Types.Undefined;
         Extentions.WriteLine("Clear trump");
 
-        if (PlayersCount == Enums.Players.Four)
-            UnSharedCards = Card.AllCards.Where(x => x.Value >= MinValue && x.Value != Values.Undefined).ToArray();
+        if (Data.PlayersCount == Enums.Players.Four)
+            Data.UnSharedCards = Card.AllCards.Where(x => x.Value >= MinValue && x.Value != Values.Undefined).ToArray();
         else
             throw new NotImplementedException();
 
@@ -102,7 +90,7 @@ public class Engine(Players playersCount)
         void nextPosistion()
         {
             PositionShared++;
-            if (PositionShared > ((int)PlayersCount))
+            if (PositionShared > ((int)Data.PlayersCount))
                 PositionShared = 1;
         }
         void addCards()
@@ -119,25 +107,25 @@ public class Engine(Players playersCount)
         }
         void SplitCards()
         {
-            UnSharedCards.Split(4, out cardsToshare, out var r);
-            UnSharedCards = r.ToArray();
+            Data.UnSharedCards.Split(4, out cardsToshare, out var r);
+            Data.UnSharedCards = r.ToArray();
         }
 
 
-        if (PlayersCount == Enums.Players.Four)
+        if (Data.PlayersCount == Enums.Players.Four)
         {
-            if (UnSharedCards.Count() == 32)
+            if (Data.UnSharedCards.Count() == 32)
             {
-                PositionShared = WhoSaidTrump;
+                PositionShared = Data.WhoSaidTrump;
                 SplitCards();
                 addCards();
             }
-            if (Trump == Types.Undefined)
+            if (Data.Trump == Types.Undefined)
             {
                 Extentions.WriteLine("Waiting for trump");
                 return;
             }
-            while (UnSharedCards.Length != 0)
+            while (Data.UnSharedCards.Length != 0)
             {
                 nextPosistion();
                 SplitCards();
@@ -147,8 +135,8 @@ public class Engine(Players playersCount)
             foreach (var t in Teams)
                 foreach (var p in t.Players)
                     foreach (var c in p.Deck)
-                        c.TrumpType = Trump;
-            CurrentPlayerPosition = WhoSaidTrump;
+                        c.TrumpType = Data.Trump;
+            Data.CurrentPlayerPosition = Data.WhoSaidTrump;
         }
         else
             throw new NotImplementedException();
@@ -156,15 +144,15 @@ public class Engine(Players playersCount)
     public void CheckDeck()
     {
         Extentions.WriteLine("Checking current round");
-        if(PlayersCount == Players.Four)
+        if(Data.PlayersCount == Players.Four)
         {
-            if (CurrentRound.Count != 4)
+            if (Data.CurrentRound.Count != 4)
                 return;
 
             Extentions.WriteLine("Current round's cards are full");
-            var cardwon = CurrentRound[0];
+            var cardwon = Data.CurrentRound[0];
             Extentions.WriteLine("Checking which card won");
-            foreach (var item in CurrentRound.Skip(1))
+            foreach (var item in Data.CurrentRound.Skip(1))
             {
                 if(item.card > cardwon.card)
                     cardwon = item;
@@ -177,24 +165,24 @@ public class Engine(Players playersCount)
                 foreach (var pl in t.Players)
                     if (pl.Position == cardwon.player)
                     {
-                        t.RoundsWon.Add((CurrentRound.Select(x => x.card).ToArray(), cardwon.player));
+                        t.RoundsWon.Add((Data.CurrentRound.Select(x => x.card).ToArray(), cardwon.player));
                         winGuid = t.ID;
                         Extentions.WriteLine("Team with '" + t.ID + "' won.");
                     }
 
             Extentions.WriteLine("Clearing current rounds");
-            OldRounds.Add((CurrentRound.Select(x => x.card).ToArray(), winGuid, cardwon.player));
-            CurrentRound.Clear();
-            CurrentPlayerPosition = cardwon.player;
+            Data.OldRounds.Add((Data.CurrentRound.Select(x => x.card).ToArray(), winGuid, cardwon.player));
+            Data.CurrentRound.Clear();
+            Data.CurrentPlayerPosition = cardwon.player;
             CheckEnd();
         }
     }
     public void CheckEnd()
     {
         Extentions.WriteLine("Checking whether game ends");
-        if (PlayersCount == Players.Four)
+        if (Data.PlayersCount == Players.Four)
         {
-            if(OldRounds.Count != 8) 
+            if(Data.OldRounds.Count != 8) 
                 return;
 
             Extentions.WriteLine("Game ended, checking which team won the round");
@@ -203,14 +191,14 @@ public class Engine(Players playersCount)
                 Extentions.WriteLine("Game is a draw.");
                 Teams[0].Draws++;
                 Teams[1].Draws++;
-                OldGames.Add((OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Guid.Empty));
+                Data.OldGames.Add((Data.OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Guid.Empty));
                 GameEnded?.Invoke(this,(true,Guid.Empty));
             }else if (Teams[0].RoundsWon.Count > Teams[1].RoundsWon.Count)
             {
                 Extentions.WriteLine("Team 0 won.");
                 Teams[0].Wins++;
                 Teams[1].Loses++;
-                OldGames.Add((OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Teams[0].ID));
+                Data.OldGames.Add((Data.OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Teams[0].ID));
                 GameEnded?.Invoke(this, (false, Teams[0].ID));
             }
             else
@@ -218,31 +206,31 @@ public class Engine(Players playersCount)
                 Extentions.WriteLine("Team 1 won.");
                 Teams[1].Wins++;
                 Teams[0].Loses++;
-                OldGames.Add((OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Teams[1].ID));
+                Data.OldGames.Add((Data.OldRounds.Select(x => (x.round, x.PlayerWon)).ToArray(), Teams[1].ID));
                 GameEnded?.Invoke(this, (false, Teams[1].ID));
             }
 
-            WhoSaidTrump++;
-            if (WhoSaidTrump > ((int)PlayersCount))
-                WhoSaidTrump = 1;
+            Data.WhoSaidTrump++;
+            if (Data.WhoSaidTrump > ((int)Data.PlayersCount))
+                Data.WhoSaidTrump = 1;
         }
     }
     public void ShareTrades()
     {
         Extentions.WriteLine("Sharing trades,will return if it's a draw");
-        if (OldGames.Last().TeamWon == Guid.Empty)
+        if (Data.OldGames.Last().TeamWon == Guid.Empty)
             return;
 
         Extentions.WriteLine("Last game is not a draw");
         Extentions.WriteLine("Checking draws for double trade");
         int drawsbefore = 0;
         bool isCurrentDraw = false;
-        int index = OldGames.Count - 2;
+        int index = Data.OldGames.Count - 2;
         do
         {
             if (index >= 0)
             {
-                if (OldGames[index].TeamWon == Guid.Empty)
+                if (Data.OldGames[index].TeamWon == Guid.Empty)
                 {
                     drawsbefore--;
                     isCurrentDraw = true;
@@ -256,11 +244,11 @@ public class Engine(Players playersCount)
 
         if ((drawsbefore % 2) == 0 && drawsbefore != 0)
         {
-            Extentions.WriteLine("Double trading to team with '" + OldGames.Last().TeamWon.ToString() + "' guid.");
+            Extentions.WriteLine("Double trading to team with '" + Data.OldGames.Last().TeamWon.ToString() + "' guid.");
             Card[] tradesgiving = [];
 
             foreach (var team in Teams)
-                if (team.ID != OldGames.Last().TeamWon)
+                if (team.ID != Data.OldGames.Last().TeamWon)
                 {
                     if (team.TradesHave.Count >= 2)
                     {
@@ -274,7 +262,7 @@ public class Engine(Players playersCount)
                 }
 
             foreach (var team in Teams)
-                if (team.ID == OldGames.Last().TeamWon)
+                if (team.ID == Data.OldGames.Last().TeamWon)
                 {
                     foreach (var item in tradesgiving)
                         team.TradesGiven.Add(item);
@@ -285,11 +273,11 @@ public class Engine(Players playersCount)
         }
         else
         {
-            Extentions.WriteLine("Single trading to team with '" + OldGames.Last().TeamWon.ToString() + "' guid.");
+            Extentions.WriteLine("Single trading to team with '" + Data.OldGames.Last().TeamWon.ToString() + "' guid.");
             Card[] tradesgiving = [];
 
             foreach (var team in Teams)
-                if (team.ID != OldGames.Last().TeamWon)
+                if (team.ID != Data.OldGames.Last().TeamWon)
                 {
                     if (team.TradesHave.Count >= 1)
                     {
@@ -303,7 +291,7 @@ public class Engine(Players playersCount)
                 }
 
             foreach (var team in Teams)
-                if (team.ID == OldGames.Last().TeamWon)
+                if (team.ID == Data.OldGames.Last().TeamWon)
                 {
                     foreach (var item in tradesgiving)
                         team.TradesGiven.Add(item);
@@ -326,19 +314,19 @@ public class Engine(Players playersCount)
     }
     private void NextPlayerPosition()
     {
-        CurrentPlayerPosition++;
-        if (CurrentPlayerPosition > ((int)PlayersCount))
-            CurrentPlayerPosition = 1;
+        Data.CurrentPlayerPosition++;
+        if (Data.CurrentPlayerPosition > ((int)Data.PlayersCount))
+            Data.CurrentPlayerPosition = 1;
 
-        Extentions.WriteLine("Player" + CurrentPlayerPosition + " has to place a card");
+        Extentions.WriteLine("Player" + Data.CurrentPlayerPosition + " has to place a card");
     }
     public void PlaceCard(Card card,int p)
     {
         Extentions.WriteLine("Player " + p + " is trying to place a card");
-        if (CurrentPlayerPosition != p)
+        if (Data.CurrentPlayerPosition != p)
             return;
 
-        if (CurrentRound.Any(x => x.player == p))
+        if (Data.CurrentRound.Any(x => x.player == p))
             return;
 
 
@@ -349,20 +337,20 @@ public class Engine(Players playersCount)
                 {
                     if(pl.Deck.Any(x=> x.Value == card.Value && x.Type == card.Type))
                     {
-                        if (CurrentRound.Any())                        
-                            if(CurrentRoundType != card.Type)                            
-                                if(pl.Deck.Any(x=> x.Type == CurrentRoundType))
+                        if (Data.CurrentRound.Any())                        
+                            if(Data.CurrentRoundType != card.Type)                            
+                                if(pl.Deck.Any(x=> x.Type == Data.CurrentRoundType))
                                 {
-                                    Extentions.WriteLine("Player " + p + " has " + CurrentRoundType + " cards.");
+                                    Extentions.WriteLine("Player " + p + " has " + Data.CurrentRoundType + " cards.");
                                     return;
                                 }
                             
                        
 
-                        if (!CurrentRound.Any())
-                            CurrentRoundType = card.Type;
+                        if (!Data.CurrentRound.Any())
+                            Data.CurrentRoundType = card.Type;
 
-                        CurrentRound.Add((pl.Deck.First(x => x.Value == card.Value && x.Type == card.Type), p));
+                        Data.CurrentRound.Add((pl.Deck.First(x => x.Value == card.Value && x.Type == card.Type), p));
                         pl.Deck.Remove(x => x.Value == card.Value && x.Type == card.Type);
                         Extentions.WriteLine("Placing card by player " + p + " is successful.");
                         NextPlayerPosition();
@@ -374,9 +362,9 @@ public class Engine(Players playersCount)
     {
         for (int i = 0; i < times; i++)
         {
-            UnSharedCards = [.. UnSharedCards.ToList().Shuffle()];
+            Data.UnSharedCards = [.. Data.UnSharedCards.ToList().Shuffle()];
         }
-        Extentions.WriteLine($"Shuffled cards {times} times\n" + string.Join(',',UnSharedCards.Select(x=> x.ToString())));
+        Extentions.WriteLine($"Shuffled cards {times} times\n" + string.Join(',',Data.UnSharedCards.Select(x=> x.ToString())));
     }
 
 }

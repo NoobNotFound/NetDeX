@@ -40,7 +40,7 @@ class Program
         OmiEngine.Share();
 
         WriteLine("Set trump\n" + string.Join('\n', Enum.GetValues<Solitaire.Games.Enums.Types>()));
-        OmiEngine.Trump = ParseEnum<Solitaire.Games.Enums.Types>();
+        OmiEngine.Data.Trump = ParseEnum<Solitaire.Games.Enums.Types>();
 
         OmiEngine.Share();
         ReadLine();

@@ -13,6 +13,8 @@ namespace Solitaire.Games.Omi.Core
         public const string JoinPlayerFailed = "AC3";
         public const string JoinPlayerSuccess = "AC4";
         public const string ShuffleCards = "AC5";
+        public const string EngineDataChanged = "AC6";
+        public const string TeamsWithPlayers = "AC7";
 
     }
 }

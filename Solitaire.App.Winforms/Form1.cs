@@ -38,7 +38,7 @@ namespace Solitaire.App.Winforms
                 pnlTrump.Enabled = false;
                 pnlTrump.Enabled = true;
             }
-            CurrentP.Text = "Current Player: " + OmiEngine.CurrentPlayerPosition;
+            CurrentP.Text = "Current Player: " + OmiEngine.Data.CurrentPlayerPosition;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -61,10 +61,10 @@ namespace Solitaire.App.Winforms
                     p.DeckChanged += P_DeckChanged;
                 }
             }
-            OmiEngine.CurrentRound.CollectionChanged += (_, _) =>
+            OmiEngine.Data.CurrentRound.CollectionChanged += (_, _) =>
             {
                 listBox5.Items.Clear();
-                foreach (var item in OmiEngine.CurrentRound)
+                foreach (var item in OmiEngine.Data.CurrentRound)
                 {
                     listBox5.Items.Add(item);
                 }
@@ -141,8 +141,8 @@ namespace Solitaire.App.Winforms
 
         private void btnTrump_Click(object sender, EventArgs e)
         {
-            OmiEngine.Trump = (Games.Enums.Types)comboBox1.SelectedItem;
-            TrumP.Text = "Who said trump: Player " + OmiEngine.WhoSaidTrump;
+            OmiEngine.Data.Trump = (Games.Enums.Types)comboBox1.SelectedItem;
+            TrumP.Text = "Who said trump: Player " + OmiEngine.Data.WhoSaidTrump;
 
             pnlTrump.Enabled = false;
             pnlShare.Enabled = true;
@@ -151,37 +151,37 @@ namespace Solitaire.App.Winforms
         private void btnAddToDeck_Click(object sender, EventArgs e)
         {
 
-            switch (OmiEngine.CurrentPlayerPosition)
+            switch (OmiEngine.Data.CurrentPlayerPosition)
             {
                 case 1:
                     if(listBox1.SelectedItem != null)
-                    OmiEngine.PlaceCard((Card)listBox1.SelectedItem, OmiEngine.CurrentPlayerPosition);
+                    OmiEngine.PlaceCard((Card)listBox1.SelectedItem, OmiEngine.Data.CurrentPlayerPosition);
                     break;
                 case 2:
                     if (listBox2.SelectedItem != null)
-                        OmiEngine.PlaceCard((Card)listBox2.SelectedItem, OmiEngine.CurrentPlayerPosition);
+                        OmiEngine.PlaceCard((Card)listBox2.SelectedItem, OmiEngine.Data.CurrentPlayerPosition);
                     break;
                 case 3:
                     if (listBox3.SelectedItem != null)
-                        OmiEngine.PlaceCard((Card)listBox3.SelectedItem, OmiEngine.CurrentPlayerPosition);
+                        OmiEngine.PlaceCard((Card)listBox3.SelectedItem, OmiEngine.Data.CurrentPlayerPosition);
                     break;
                 default:
                     if (listBox4.SelectedItem != null)
-                        OmiEngine.PlaceCard((Card)listBox4.SelectedItem, OmiEngine.CurrentPlayerPosition);
+                        OmiEngine.PlaceCard((Card)listBox4.SelectedItem, OmiEngine.Data.CurrentPlayerPosition);
                     break;
             }
-            CurrentP.Text = "Current Player: " + OmiEngine.CurrentPlayerPosition;
+            CurrentP.Text = "Current Player: " + OmiEngine.Data.CurrentPlayerPosition;
             Team1WinsC.Text = "Wins in current game: " + OmiEngine.Teams[0].RoundsWon.Count();
             Team2WinsC.Text = "Wins in current game: " + OmiEngine.Teams[1].RoundsWon.Count();
 
-            CurrentType.Text = "Current Card Type: " + OmiEngine.CurrentRoundType;
+            CurrentType.Text = "Current Card Type: " + OmiEngine.Data.CurrentRoundType;
         }
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
             OmiEngine.NewGame();
-            TrumP.Text = "Who said trump: Player " + OmiEngine.WhoSaidTrump;
-            CurrentP.Text = "Current Player: " + OmiEngine.CurrentPlayerPosition;
+            TrumP.Text = "Who said trump: Player " + OmiEngine.Data.WhoSaidTrump;
+            CurrentP.Text = "Current Player: " + OmiEngine.Data.CurrentPlayerPosition;
 
             pnlShare.Enabled = true;
             pnlTrump.Enabled = false;
