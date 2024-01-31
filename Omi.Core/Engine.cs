@@ -8,9 +8,11 @@ using System.Security;
 namespace Solitaire.Games.Omi.Core;
 public class Engine(Players PlayersCount)
 {
-    public EngineData Data { get; internal set; } = new(PlayersCount);
     public event EventHandler<(bool isDraw, Guid TeamWon)>? GameEnded;
     public event EventHandler<Guid>? MainGameEnded;
+    public event EventHandler<TeamsData>? TeamDataChanged;
+
+    public EngineData Data { get; internal set; } = new(PlayersCount);
     public Values MinValue => Data.PlayersCount == Enums.Players.Four ? Values.Seven : Values.Eight;
     public Team[] Teams { get; internal set; } = [];
 
@@ -43,12 +45,26 @@ public class Engine(Players PlayersCount)
 
             Extentions.WriteLine("Added trades to the teams");
 
+            foreach (var item in Teams)
+                item.DataChanged += (_, _) => ChangeTeamData();
+            
         }
         else
         {
             throw new NotImplementedException();
         }
         IsInitialized = true;
+    }
+    int TeamsdataChangeCount = 0;
+    //waits 50 ms to get more data changes then invoke
+    private async void ChangeTeamData()
+    {
+        TeamsdataChangeCount++;
+        var d = TeamsdataChangeCount;
+        await Task.Delay(50);
+
+        if (d == TeamsdataChangeCount)
+            TeamDataChanged?.Invoke(this, new TeamsData() { Teams = Teams.Select(x=> x.ToSimpleTeam()).ToArray()});
     }
     public void NewGame()
     {
@@ -329,6 +345,8 @@ public class Engine(Players PlayersCount)
         if (Data.CurrentRound.Any(x => x.player == p))
             return;
 
+        if (card == null)
+            return;
 
         foreach (var t in Teams)
             foreach (var pl in t.Players)

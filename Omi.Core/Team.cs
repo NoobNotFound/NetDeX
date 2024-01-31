@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Solitaire.Games.Omi.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,10 +8,51 @@ using System.Threading.Tasks;
 
 namespace Solitaire.Games.Omi.Core
 {
+    public class TeamsData
+    {
+        public SimpleTeam[] Teams { get; set; } = [];
+    }
+    public class SimpleTeam
+    {
+        public string Name;
+        public SimplePlayer[] Players;
+        public int Wins;
+        public int Draws;
+        public int Loses;
+        public (Card[] card, int playerwon)[] RoundsWon;
+        public Card[] TradesHave;
+        public Card[] TradesGiven;
+        public Guid ID;
+    }
     public class Team
     {
-        public string Name { get; set; } = string.Empty;
-        public ObservableCollection<Player> Players { get; private set; } = new();
+        public SimpleTeam ToSimpleTeam()
+        {
+            return new SimpleTeam 
+            { 
+                Name = Name,
+                Players = Players.Select(x=> x.ToSimplePlayer()).ToArray(),
+                Wins = Wins,
+                Draws = Draws,
+                Loses = Loses,
+                RoundsWon = RoundsWon.ToArray(),
+                TradesHave = TradesHave.ToArray(),
+                TradesGiven = TradesGiven.ToArray(),
+                ID = ID
+            };
+        }
+        public event EventHandler? DataChanged;
+
+        private string _Name = string.Empty;
+        public string Name
+        {
+            get => _Name;
+            internal set
+            {
+                _Name = value;
+                ChangeData();
+            }
+        }
 
         private int _Wins;
         public int Wins
@@ -23,6 +65,7 @@ namespace Solitaire.Games.Omi.Core
                 {
                     player.Wins = value;
                 }
+                ChangeData();
             }
         }
 
@@ -37,6 +80,7 @@ namespace Solitaire.Games.Omi.Core
                 {
                     player.Loses = value;
                 }
+                ChangeData();
             }
         }
 
@@ -51,22 +95,45 @@ namespace Solitaire.Games.Omi.Core
                 {
                     player.Loses = value;
                 }
+                ChangeData();
             }
         }
+
+        public ObservableCollection<Player> Players { get; private set; } = new();
         public ObservableCollection<(Card[] card,int playerwon)> RoundsWon { get; private set; } = new();
         public ObservableCollection<Card> TradesHave { get; private set; } = new();
         public ObservableCollection<Card> TradesGiven { get; private set; } = new();
+
         public Guid ID { get; internal set; }
 
         public Team(Guid iD, string name, Player[] players)
         {
             ID = iD;
             Name = name;
-            foreach (var item in players)
-            {
-                item.Team = iD;
-                Players.Add(item);
-            }
+            Players.AddRange(players);
+
+            foreach (var item in Players)
+                item.Deck.CollectionChanged += CollectionsChanged;
+            
+            RoundsWon.CollectionChanged += CollectionsChanged;
+            TradesHave.CollectionChanged += CollectionsChanged;
+            TradesGiven.CollectionChanged += CollectionsChanged;
+        }
+
+        private void CollectionsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ChangeData();
+        }
+
+        int dataChangeCount = 0;
+        private async void ChangeData()
+        {
+            dataChangeCount++;
+            var d = dataChangeCount;
+            await Task.Delay(50);
+
+            if (d == dataChangeCount)
+                DataChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

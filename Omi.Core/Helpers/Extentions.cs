@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +20,16 @@ namespace Solitaire.Games.Omi.Core.Helpers
         {
             foreach (var item in items)
                 cll.Add(item);
+        }
+
+        public static List<IPAddress> GetIPAddresses()
+        {
+            return NetworkInterface
+             .GetAllNetworkInterfaces()
+             .SelectMany(i => i.GetIPProperties().UnicastAddresses)
+             .Where(a => a.Address.AddressFamily == AddressFamily.InterNetwork)
+             .Select(a => a.Address)
+             .ToList();
         }
         public static IList<T> Shuffle<T>(this IList<T> list)
         {

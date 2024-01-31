@@ -7,8 +7,31 @@ using System.Threading.Tasks;
 
 namespace Solitaire.Games.Omi.Core
 {
+    public class SimplePlayer
+    {
+        public int Position;
+        public Guid ID;
+        public Card[] Deck;
+        public int Wins;
+        public Guid Team;
+        public string Name;
+        public int Loses;
+    }
     public class Player
     {
+        public SimplePlayer ToSimplePlayer()
+        {
+            return new SimplePlayer()
+            {
+                Position = Position,
+                ID = ID,
+                Deck = Deck.ToArray(),
+                Wins = Wins,
+                Team = Team,
+                Name = Name,
+                Loses = Loses
+            };
+        }
         public event EventHandler<(Card[] deck, int player)>? DeckChanged;
         public int Position { get; internal set; }
         public Guid ID { get; internal set; }

@@ -11,8 +11,8 @@ namespace Solitaire.Games.Omi.Core
 {
     public class Card
     {
-        public Types Type { get; private set; }
-        public Values Value { get; private set; }
+        public Types Type { get; set; }
+        public Values Value { get; set; }
         public Types TrumpType { get; set; }
         public int Owner { get; set; }
         public Card() : this(Types.Undefined,Values.Undefined) { }

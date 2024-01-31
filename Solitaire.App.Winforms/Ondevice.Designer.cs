@@ -1,6 +1,6 @@
 ﻿namespace Solitaire.App.Winforms
 {
-    partial class Form1
+    partial class Ondevice
     {
         /// <summary>
         ///  Required designer variable.

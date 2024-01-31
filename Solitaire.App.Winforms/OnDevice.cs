@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace Solitaire.App.Winforms
 {
-    public partial class Form1 : Form
+    public partial class Ondevice : Form
     {
         public Engine OmiEngine { get; set; }
-        public Form1()
+        public Ondevice()
         {
             InitializeComponent();
             Extentions.WriteToConsole = true;
