@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Omi.Core\Solitaire.Games.Omi.Core.csproj" />
+    <ProjectReference Include="..\Solitaire.Games.Omi.Core\Solitaire.Games.Omi.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
