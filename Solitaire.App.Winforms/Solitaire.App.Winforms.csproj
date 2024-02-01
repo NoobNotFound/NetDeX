@@ -10,12 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Omi.Core\Solitaire.Games.Omi.Core.csproj" />
-    <ProjectReference Include="..\Solitaire.Games.Omi.Core\Solitaire.Games.Omi.Core.csproj" />
+    <Folder Include="Properties\DataSources\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
+    <ProjectReference Include="..\Solitaire.Games.Omi.Core\Solitaire.Games.Omi.Core.csproj" />
   </ItemGroup>
 
 </Project>
