@@ -21,12 +21,15 @@ public class Game
     public Engine Engine { get; private set; }
     public bool IsHosted { get; private set; } = false;
     public string ServerIPPort => Server == null ? "" : $"{Server.IpAddress}:{Server.Port}";
-    public ObservableCollection<(string ipPort, int place)> Players { get; private set; } = [
-        ("",1),
-        ("",2),
-        ("",3),
-        ("",4)
+    public ObservableCollection<(string ipPort, int place,string name)> Players { get; private set; } = [
+        ("",1,""),
+        ("",2,""),
+        ("",3,""),
+        ("",4,"")
         ];
+
+    public ObservableCollection<(string ipPort, string name)> Members { get; private set; } = new();
+
     public Game()
     {
         Engine = new Engine(Enums.Players.Four);
@@ -42,6 +45,7 @@ public class Game
 
         Server.Start();
         IsHosted = true;
+        
 
         Engine = new Engine(Enums.Players.Four);
         Reset();
@@ -49,6 +53,31 @@ public class Game
         Engine.TeamDataChanged += async (s, e) => await BroadcastAll(new Action(ActionCodes.TeamDataChanged, e.SerializeJSON(), false));
         Engine.Data.DataChanged += async (s, e) => await BroadcastAll(new Action(ActionCodes.EngineDataChanged, e.SerializeJSON(), false));
 
+        Members.CollectionChanged += Members_CollectionChanged;
+    }
+
+    int memberschanges = 0;
+    private async void Members_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        var i = memberschanges;
+        await Task.Delay(50);
+        if (i == memberschanges)
+        {
+            await BroadcastAll(new Action(ActionCodes.UpdateMembers, Members.SerializeJSON(), false));
+
+            foreach (var item in Members)
+            {
+                if (Players.Any(x => x.ipPort == item.ipPort))
+                {
+                    var x = Players.FirstOrDefault(x => x.ipPort == item.ipPort).place;
+
+                    foreach (var t in Engine.Teams)
+                        foreach (var p in t.Players)
+                            if (p.Position == x)
+                                p.Name = item.name;
+                }
+            }
+        }
     }
 
     public void Join(IPAddress ip,int port)
@@ -91,12 +120,22 @@ public class Game
             Client.Send(act.SerializeJSON());
         }
     }
+    public async Task Rename(string name)
+    {
+        if (!IsHosted)
+            await SendMessage(new Action(ActionCodes.Rename, name, false), null);
+        else
+        {
+            Members.Remove(x=> x.ipPort == ServerIPPort);
+            Members.Add((ServerIPPort, name));
+        }
+    }
     private async Task SendMessage(Action act,string ipPort)
     {
         if (IsHosted)
-            Server.Send(ipPort,act.SerializeJSON());
+            await Server.SendAsync(ipPort,act.SerializeJSON());
         else
-            Client.Send(act.SerializeJSON());
+           await Client.SendAsync(act.SerializeJSON());
     }
     public async Task RequestPlayer(int P)
     {
@@ -105,9 +144,10 @@ public class Game
         else
         {
             Players.Remove(Players.First(x => x.place == P));
-            Players.Add((ServerIPPort, P));
+            Players.Add((ServerIPPort, P, Members.First(x => x.ipPort == ServerIPPort).name));
             JoinPlayerSuccess?.Invoke(this, P);
             await BroadcastAll(new Action(ActionCodes.UpdatePlayers, Players.SerializeJSON(), false));
+            Members_CollectionChanged(null, null);
         }
     }
     private async void DataReceived(object? sender, DataReceivedEventArgs e)
@@ -131,9 +171,10 @@ public class Game
                         if (Players.First(x=> x.place == p).ipPort == "")
                         {
                             Players.Remove(Players.First(x => x.place == p));
-                            Players.Add((e.IpPort, p));
+                            Players.Add((e.IpPort, p,Members.First(x=> x.ipPort == e.IpPort).name));
                             await Server.SendAsync(e.IpPort, new Action(ActionCodes.JoinPlayerSuccess, p.ToString(), false).SerializeJSON());
                             await BroadcastAll(new Action(ActionCodes.UpdatePlayers, Players.SerializeJSON(), false));
+                            Members_CollectionChanged(null, null);
                         }
                         else
                         {
@@ -146,6 +187,11 @@ public class Game
                     if (Players.Any(x => x.ipPort == e.IpPort) && int.TryParse(data.Data, out var t))
                         if (Players.FirstOrDefault(x => x.ipPort == e.IpPort).place == Engine.Data.WhoShared)
                             Engine.Shuffle(t);
+                }
+                else if (data.Code == ActionCodes.Rename)
+                {
+                    Members.Remove(x => x.ipPort == e.IpPort);
+                    Members.Add((e.IpPort,data.Data));
                 }
                 else if (data.Code == ActionCodes.SetTrump)
                 {
@@ -168,10 +214,15 @@ public class Game
             }
             else
             {
-                if(data.Code == ActionCodes.UpdatePlayers)
+                if (data.Code == ActionCodes.UpdatePlayers)
                 {
                     Players.Clear();
-                    Players.AddRange(data.Data.DeserializeJSON<(string ipPort, int place)[]>());
+                    Players.AddRange(data.Data.DeserializeJSON<(string ipPort, int place,string)[]>());
+                }
+                else if (data.Code == ActionCodes.UpdateMembers)
+                {
+                    Members.Clear();
+                    Members.AddRange(data.Data.DeserializeJSON<(string ipPort, string name)[]>());
                 }
                 else if (data.Code == ActionCodes.JoinPlayerSuccess)
                 {
@@ -278,13 +329,17 @@ public class Game
                     Engine.PlaceCard(c, Engine.Data.CurrentPlayerPosition);
         }
     }
-    private void ClientDisconnected(object? sender, ConnectionEventArgs e)
+    private async void ClientDisconnected(object? sender, ConnectionEventArgs e)
     {
         if (IsHosted)
         {
+            Players.Remove(x=> x.ipPort == e.IpPort);
+            Members.Remove(x=> x.ipPort == e.IpPort);
+            await BroadcastAll(new Action(ActionCodes.UpdatePlayers, Players.SerializeJSON(), false));
         }
         else
         {
+
         }
     }
 
@@ -293,6 +348,7 @@ public class Game
     {
         if (IsHosted)
         {
+            Members.Add((e.IpPort, ""));
             if (Engine.IsInitialized)
             {
                 await SendMessage(new Action(ActionCodes.UpdatePlayers, Players.SerializeJSON(), false),e.IpPort);

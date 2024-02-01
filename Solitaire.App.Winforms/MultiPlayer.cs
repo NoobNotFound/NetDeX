@@ -137,6 +137,7 @@ namespace Solitaire.App.Winforms
                 {
                     if (p.Position == MyP)
                     {
+                        lblPlayer.Text = p.Name;
                         listBox1.Items.Clear();
                         foreach (var i in p.Deck)
                             listBox1.Items.Add(i);
@@ -148,7 +149,7 @@ namespace Solitaire.App.Winforms
         {
             if(listBox2.SelectedItem == null) return;
 
-            var d = ((string ipPort, int place))listBox2.SelectedItem;
+            var d = ((string ipPort, int place,string name))listBox2.SelectedItem;
 
             if (d.ipPort != "") return;
 

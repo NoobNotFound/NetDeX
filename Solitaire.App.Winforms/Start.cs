@@ -27,13 +27,14 @@ namespace Solitaire.App.Winforms
             f.Show();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             var d = new IpPortDialog();
             d.ShowDialog();
 
             Program.ServerWithClient.Host(d.IP, d.Port);
 
+            await Program.ServerWithClient.Rename(d.Name);
 
             this.Hide();
             var f = new MultiPlayer();
@@ -41,11 +42,14 @@ namespace Solitaire.App.Winforms
             f.Show();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
             var d = new IpPortDialog();
             d.ShowDialog();
+
             Program.ServerWithClient.Join(d.IP, d.Port);
+
+            await Program.ServerWithClient.Rename(d.Name);
 
             this.Hide();
             var f = new MultiPlayer();

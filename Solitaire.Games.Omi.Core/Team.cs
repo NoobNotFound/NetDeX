@@ -113,16 +113,13 @@ namespace Solitaire.Games.Omi.Core
             Players.AddRange(players);
 
             foreach (var item in Players)
-                item.Deck.CollectionChanged += CollectionsChanged;
-            
-            RoundsWon.CollectionChanged += CollectionsChanged;
-            TradesHave.CollectionChanged += CollectionsChanged;
-            TradesGiven.CollectionChanged += CollectionsChanged;
-        }
-
-        private void CollectionsChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            ChangeData();
+            {
+                item.DeckChanged += (_,_) => ChangeData();
+                item.NameChanged += (_,_) => ChangeData();
+            }
+            RoundsWon.CollectionChanged += (_, _) => ChangeData();
+            TradesHave.CollectionChanged += (_, _) => ChangeData();
+            TradesGiven.CollectionChanged += (_, _) => ChangeData();
         }
 
         int dataChangeCount = 0;

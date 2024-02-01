@@ -17,6 +17,7 @@ namespace Solitaire.App.Winforms
     {
         public IPAddress? IP { get; private set; }
         public int Port { get; private set; }
+        public string Name { get; private set; }
         public IpPortDialog()
         {
             InitializeComponent();
@@ -40,6 +41,7 @@ namespace Solitaire.App.Winforms
             {
                 IP = ip;
                 Port = (int)numericUpDown1.Value;
+                Name = textBox1.Text ?? "";
                 this.Close();
             }
         }

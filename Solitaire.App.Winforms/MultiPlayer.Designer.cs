@@ -232,9 +232,9 @@
             lblPlayer.AutoSize = true;
             lblPlayer.Location = new Point(199, 85);
             lblPlayer.Name = "lblPlayer";
-            lblPlayer.Size = new Size(47, 15);
+            lblPlayer.Size = new Size(79, 15);
             lblPlayer.TabIndex = 40;
-            lblPlayer.Text = "Players ";
+            lblPlayer.Text = "Players Name";
             // 
             // pnlTrump
             // 

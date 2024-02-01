@@ -33,6 +33,8 @@
             label1 = new Label();
             label2 = new Label();
             button1 = new Button();
+            textBox1 = new TextBox();
+            label3 = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
@@ -74,7 +76,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(74, 98);
+            button1.Location = new Point(104, 126);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 9;
@@ -82,12 +84,30 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(61, 89);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(216, 23);
+            textBox1.TabIndex = 10;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(13, 93);
+            label3.Name = "label3";
+            label3.Size = new Size(42, 15);
+            label3.TabIndex = 11;
+            label3.Text = "Name:";
+            // 
             // IpPortDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(242, 142);
+            ClientSize = new Size(289, 161);
             ControlBox = false;
+            Controls.Add(label3);
+            Controls.Add(textBox1);
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -109,5 +129,7 @@
         private Label label1;
         private Label label2;
         private Button button1;
+        private TextBox textBox1;
+        private Label label3;
     }
 }

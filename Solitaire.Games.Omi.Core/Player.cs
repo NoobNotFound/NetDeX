@@ -33,13 +33,23 @@ namespace Solitaire.Games.Omi.Core
             };
         }
         public event EventHandler<(Card[] deck, int player)>? DeckChanged;
+        public event EventHandler? NameChanged;
         public int Position { get; internal set; }
         public Guid ID { get; internal set; }
         public ObservableCollection<Card> Deck { get; private set; } = new();
         public int Wins { get; internal set; } = 0;
         public Guid Team { get; internal set; }
-        
-        public string Name { get; set; } = string.Empty;
+
+        string _Name;
+        public string Name
+        {
+            get=> _Name;
+            set
+            {
+                _Name = string.IsNullOrWhiteSpace(value) ? _Name : value;
+                NameChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
         public int Loses { get; internal set; }
 
         public Player(string name, Guid iD,int position)
