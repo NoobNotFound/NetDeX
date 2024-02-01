@@ -18,6 +18,7 @@ Clone the repository to your local machine.
 
 Alternatively, you can [go to releases](https://github.com/NoobNotFound/Solitaire/releases) to download the latest version of the game.
 
+**OmiEngine**
 ```C#
 var OmiEngine = new Solitaire.Games.Omi.Core.Engine(Games.Omi.Enums.Players.Four);
 OmiEngine.Initialize();
@@ -27,6 +28,38 @@ OmiEngine.Shuffle(5);  //Shuffle 5 times
 OmiEngine.Share();   //Start share
 //so on
 ```
+**Game (LAN)**
+```C#
+var game = new Game();
+
+game.Host("192.168.0.1", 12345);
+game.Join("192.168.0.1", 12345); //No need to do this if you are the host
+game.RequestPlayer(1);
+game.Reset();
+game.NewGame();
+game.Shuffle(3);
+game.Share();
+game.SetTrump(Types.Diamond);
+//so on
+game.JoinPlayerSuccess += (sender, playerPosition) =>
+{
+    Console.WriteLine($"Player {playerPosition} joined successfully!");
+};
+
+game.Engine.EngineData.DataChanged += (sender, engineData) =>
+{
+    Console.WriteLine("Engine Data Changed:");
+    // Handle the updated engine data
+};
+
+game.Engine.TeamData.DataChanged += (sender, teamData) =>
+{
+    Console.WriteLine("Team Data Changed:");
+    // Handle the updated team data
+};
+
+```
+this example is an all in one so do not copy paste because it may not work.
 
 ## Feedback
 
