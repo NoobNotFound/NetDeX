@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solitaire.Games.Omi.Core
+namespace NetDeX.Games.Omi.Core
 {
     public class Action(string code,string data,bool sendAll)
     {

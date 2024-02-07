@@ -1,4 +1,4 @@
-﻿using Solitaire.Games.Omi.Core.Helpers;
+﻿using NetDeX.Games.Omi.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solitaire.Games.Omi.Core
+namespace NetDeX.Games.Omi.Core
 {
     public class TeamsData
     {

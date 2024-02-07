@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 
-namespace Solitaire.App.Winforms
+namespace NetDeX.App.Winforms
 {
     public partial class Start : Form
     {

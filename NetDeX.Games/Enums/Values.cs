@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solitaire.Games.Enums
+namespace NetDeX.Games.Enums
 {
     public enum Values
     {

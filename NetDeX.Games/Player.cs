@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solitaire.Games.Omi.Core
+namespace NetDeX.Games.Omi.Core
 {
     public class SimplePlayer
     {

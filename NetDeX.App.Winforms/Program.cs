@@ -1,6 +1,6 @@
-using Solitaire.Games.Omi.Core;
+using NetDeX.Games.Omi.Core;
 
-namespace Solitaire.App.Winforms
+namespace NetDeX.App.Winforms
 {
     internal static class Program
     {

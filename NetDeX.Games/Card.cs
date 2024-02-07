@@ -1,4 +1,4 @@
-﻿using Solitaire.Games.Enums;
+﻿using NetDeX.Games.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Solitaire.Games.Omi.Core
+namespace NetDeX.Games.Omi.Core
 {
     public class Card
     {

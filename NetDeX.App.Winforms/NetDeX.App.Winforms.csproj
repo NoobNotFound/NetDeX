@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Solitaire.Games.Omi.Core\Solitaire.Games.Omi.Core.csproj" />
+    <ProjectReference Include="..\NetDeX.Games\NetDeX.Games.csproj" />
   </ItemGroup>
 
 </Project>

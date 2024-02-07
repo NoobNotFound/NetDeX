@@ -1,4 +1,4 @@
-﻿using Solitaire.Games.Omi.Core;
+﻿using NetDeX.Games.Omi.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Solitaire.App.Winforms
+namespace NetDeX.App.Winforms
 {
     public partial class MultiPlayer : Form
     {
@@ -63,10 +63,10 @@ namespace Solitaire.App.Winforms
 
         private void MultiPlayer_Load(object sender, EventArgs e)
         {
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Spade);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Heart);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Diamond);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Club);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Spade);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Heart);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Diamond);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Club);
 
             Program.ServerWithClient.Engine.Data.PropertyChanged += EngineDataChanged;
             Program.ServerWithClient.Engine.TeamDataChanged += TeamsDataChanged;

@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Solitaire.Games.Enums;
-using Solitaire.Games.Omi.Core.Helpers;
-using Solitaire.Games.Omi.Enums;
+using NetDeX.Games.Enums;
+using NetDeX.Games.Omi.Core.Helpers;
+using NetDeX.Games.Omi.Enums;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Security;
 
 
-namespace Solitaire.Games.Omi.Core;
+namespace NetDeX.Games.Omi.Core;
 public class EngineSimpleData
 {
     public Players PlayersCount { get; set; }

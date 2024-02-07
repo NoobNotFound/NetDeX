@@ -1,4 +1,4 @@
-﻿namespace Solitaire.App.Winforms
+﻿namespace NetDeX.App.Winforms
 {
     partial class Ondevice
     {

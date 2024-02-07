@@ -1,8 +1,8 @@
-using Solitaire.Games.Omi.Core;
-using Solitaire.Games.Omi.Core.Helpers;
+using NetDeX.Games.Omi.Core;
+using NetDeX.Games.Omi.Core.Helpers;
 using System.Diagnostics;
 
-namespace Solitaire.App.Winforms
+namespace NetDeX.App.Winforms
 {
     public partial class Ondevice : Form
     {
@@ -47,10 +47,10 @@ namespace Solitaire.App.Winforms
             pnlTrump.Enabled = false;
             pnlDecks.Enabled = false;
 
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Spade);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Heart);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Diamond);
-            comboBox1.Items.Add(Solitaire.Games.Enums.Types.Club);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Spade);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Heart);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Diamond);
+            comboBox1.Items.Add(NetDeX.Games.Enums.Types.Club);
 
             comboBox1.SelectedIndex = 0;
 

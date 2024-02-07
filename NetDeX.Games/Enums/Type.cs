@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Solitaire.Games.Omi.Enums
+namespace NetDeX.Games.Enums
 {
-    public enum Players : int
+    public enum Types
     {
-        Three = 3,
-        Four = 4
+        Heart,
+        Diamond,
+        Spade,
+        Club,
+        Undefined
     }
 }

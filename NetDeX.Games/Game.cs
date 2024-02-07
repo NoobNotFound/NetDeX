@@ -1,6 +1,6 @@
-﻿using Solitaire.Games.Enums;
-using Solitaire.Games.Omi.Core.Helpers;
-using Solitaire.Games.Omi.Enums;
+﻿using NetDeX.Games.Enums;
+using NetDeX.Games.Omi.Core.Helpers;
+using NetDeX.Games.Omi.Enums;
 using SuperSimpleTcp;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Solitaire.Games.Omi.Core;
+namespace NetDeX.Games.Omi.Core;
 
 public class Game
 {

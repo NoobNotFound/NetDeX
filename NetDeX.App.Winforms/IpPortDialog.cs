@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Solitaire.App.Winforms
+namespace NetDeX.App.Winforms
 {
     public partial class IpPortDialog : Form
     {
