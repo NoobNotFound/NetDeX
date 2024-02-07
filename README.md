@@ -4,7 +4,7 @@ NetDeX is a a LAN-based multiplayer and single-player card game engine developed
 
 ## Features
 
--Omi,304
+- Supports Omi, 304 is planned to implement.
 - **LAN Multiplayer:** Connect with friends over a local area network for exciting multiplayer matches.
 - **Single-Player Mode:** Enjoy the game even when playing solo with computer-controlled opponents. (not planned yet)
 - **Intuitive User Interface:** A user-friendly interface for an enjoyable gaming experience. (to do)
