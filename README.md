@@ -1,9 +1,10 @@
-# Solitaire
+# NetDeX
 
-Welcome to Omi, a LAN-based multiplayer and single-player card game developed in .NET for local gaming enjoyment. Play with your friends over a local network or challenge computer-controlled opponents for a solo gaming experience.
+NetDeX is a a LAN-based multiplayer and single-player card game engine developed in .NET for local gaming enjoyment (especially for Sri Lankans). Play with your friends over a local network or challenge computer-controlled opponents for a solo gaming experience.
 
 ## Features
 
+-Omi,304
 - **LAN Multiplayer:** Connect with friends over a local area network for exciting multiplayer matches.
 - **Single-Player Mode:** Enjoy the game even when playing solo with computer-controlled opponents. (not planned yet)
 - **Intuitive User Interface:** A user-friendly interface for an enjoyable gaming experience. (to do)
