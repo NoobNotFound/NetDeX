@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Solitaire.Games.Omi.Core;
@@ -29,15 +31,16 @@ public class Game
         ];
 
     public ObservableCollection<(string ipPort, string name)> Members { get; private set; } = new();
+    public ObservableCollection<Message> Messages { get; private set; } = new();
 
     public Game()
     {
         Engine = new Engine(Enums.Players.Four);
     }
 
-    public void Host(IPAddress ip,int port)
+    public void Host(IPAddress ip, int port)
     {
-        Server = new SimpleTcpServer(ip.ToString() , port);
+        Server = new SimpleTcpServer(ip.ToString(), port);
 
         Server.Events.ClientConnected += ClientConnected;
         Server.Events.ClientDisconnected += ClientDisconnected;
@@ -45,7 +48,7 @@ public class Game
 
         Server.Start();
         IsHosted = true;
-        
+
 
         Engine = new Engine(Enums.Players.Four);
         Reset();
@@ -54,6 +57,7 @@ public class Game
         Engine.Data.DataChanged += async (s, e) => await BroadcastAll(new Action(ActionCodes.EngineDataChanged, e.SerializeJSON(), false));
 
         Members.CollectionChanged += Members_CollectionChanged;
+        Members.Add((ServerIPPort, ""));
     }
 
     int memberschanges = 0;
@@ -76,6 +80,13 @@ public class Game
                             if (p.Position == x)
                                 p.Name = item.name;
                 }
+            }
+
+            foreach (var item in Members)
+            {
+                if (Messages.Any(x => x.ipPort == item.ipPort))
+                   Messages.FirstOrDefault(x => x.ipPort == item.ipPort).Name = item.name;
+                
             }
         }
     }
@@ -103,8 +114,7 @@ public class Game
     {
         if (!IsHosted)
             throw new InvalidOperationException("Game is not hosted");
-
-
+        
         Engine.NewGame();
     }
     private async Task BroadcastAll(Action act)
@@ -112,6 +122,7 @@ public class Game
         if (IsHosted)
             foreach (var item in Server.GetClients())
             {
+                if( Server.IsConnected(item))
                 await Server.SendAsync(item, act.SerializeJSON());
             }
         else
@@ -119,6 +130,21 @@ public class Game
             act.SendAll = true;
             Client.Send(act.SerializeJSON());
         }
+    }
+    int msgCount = 0;
+    public async Task Chat(string content)
+    {
+        msgCount++;
+        if (IsHosted)
+        {
+            Messages.Add(new Message { Content = content, Count = msgCount, ipPort = ServerIPPort, Name = (Members.First(x => x.ipPort == ServerIPPort)).name });
+            await BroadcastAll(new Action(ActionCodes.Message, new Message { Content = content, Count = msgCount, ipPort = ServerIPPort,Name = (Members.First(x => x.ipPort == ServerIPPort)).name }.SerializeJSON(), false));
+        }
+        else
+        {
+            await SendMessage(new Action(ActionCodes.Message, new Message { Content = content, Count = msgCount }.SerializeJSON(), false), null);
+        }
+
     }
     public async Task Rename(string name)
     {
@@ -188,6 +214,15 @@ public class Game
                         if (Players.FirstOrDefault(x => x.ipPort == e.IpPort).place == Engine.Data.WhoShared)
                             Engine.Shuffle(t);
                 }
+                else if (data.Code == ActionCodes.Message)
+                {
+                    var msg = data.Data.DeserializeJSON<Message>();
+                    msg.ipPort = e.IpPort;
+                    msg.Name = (Members.First(x => x.ipPort == e.IpPort)).name;
+                    Messages.Add(msg);
+                    await BroadcastAll(new Action(ActionCodes.Message,msg.SerializeJSON(), false));
+
+                }
                 else if (data.Code == ActionCodes.Rename)
                 {
                     Members.Remove(x => x.ipPort == e.IpPort);
@@ -227,6 +262,11 @@ public class Game
                 else if (data.Code == ActionCodes.JoinPlayerSuccess)
                 {
                     JoinPlayerSuccess?.Invoke(this, int.Parse(data.Data));
+                }
+                else if (data.Code == ActionCodes.Message)
+                {
+                    Messages.Add(data.Data.DeserializeJSON<Message>());
+
                 }
                 else if(data.Code == ActionCodes.TeamDataChanged)
                 {
@@ -352,6 +392,7 @@ public class Game
             if (Engine.IsInitialized)
             {
                 await SendMessage(new Action(ActionCodes.UpdatePlayers, Players.SerializeJSON(), false),e.IpPort);
+                await SendMessage(new Action(ActionCodes.UpdateMembers, Members.SerializeJSON(), false), e.IpPort);
             }
         }
         else

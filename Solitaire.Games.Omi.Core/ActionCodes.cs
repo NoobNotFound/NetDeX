@@ -20,5 +20,6 @@ namespace Solitaire.Games.Omi.Core
         public const string PlaceCard = "AC10";
         public const string Rename = "AC11";
         public const string UpdateMembers = "AC12";
+        public const string Message = "AC13";
     }
 }

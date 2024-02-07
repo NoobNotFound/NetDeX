@@ -47,12 +47,12 @@
             pnlDecks = new Panel();
             lblPlayer = new Label();
             pnlTrump = new Panel();
+            btnNewGame = new Button();
             btnRequestAc = new Button();
             listBox2 = new ListBox();
             CurrentType = new Label();
             CurrentP = new Label();
             groupBox2 = new GroupBox();
-            btnNewGame = new Button();
             groupBox1 = new GroupBox();
             Team1WinsC = new Label();
             Team1TradesGiven = new Label();
@@ -65,6 +65,10 @@
             listBox5 = new ListBox();
             gameBindingSource = new BindingSource(components);
             TrumpT = new Label();
+            listBox3 = new ListBox();
+            label1 = new Label();
+            textBox1 = new TextBox();
+            btnSend = new Button();
             pnlShare.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ShuffleTimes).BeginInit();
             pnlDecks.SuspendLayout();
@@ -160,7 +164,7 @@
             // 
             listBox1.FormattingEnabled = true;
             listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(10, 74);
+            listBox1.Location = new Point(7, 84);
             listBox1.Name = "listBox1";
             listBox1.Size = new Size(156, 169);
             listBox1.TabIndex = 4;
@@ -180,7 +184,7 @@
             pnlShare.Controls.Add(btnShare);
             pnlShare.Controls.Add(ShuffleBtn);
             pnlShare.Controls.Add(ShuffleTimes);
-            pnlShare.Location = new Point(11, 10);
+            pnlShare.Location = new Point(75, 7);
             pnlShare.Name = "pnlShare";
             pnlShare.Size = new Size(158, 61);
             pnlShare.TabIndex = 39;
@@ -222,15 +226,16 @@
             pnlDecks.Controls.Add(btnAddToDeck);
             pnlDecks.Controls.Add(pnlShare);
             pnlDecks.Controls.Add(pnlTrump);
+            pnlDecks.Controls.Add(btnNewGame);
             pnlDecks.Location = new Point(12, 12);
             pnlDecks.Name = "pnlDecks";
-            pnlDecks.Size = new Size(339, 256);
+            pnlDecks.Size = new Size(361, 263);
             pnlDecks.TabIndex = 37;
             // 
             // lblPlayer
             // 
             lblPlayer.AutoSize = true;
-            lblPlayer.Location = new Point(199, 85);
+            lblPlayer.Location = new Point(7, 68);
             lblPlayer.Name = "lblPlayer";
             lblPlayer.Size = new Size(79, 15);
             lblPlayer.TabIndex = 40;
@@ -240,14 +245,24 @@
             // 
             pnlTrump.Controls.Add(comboBox1);
             pnlTrump.Controls.Add(btnTrump);
-            pnlTrump.Location = new Point(172, 10);
+            pnlTrump.Location = new Point(236, 7);
             pnlTrump.Name = "pnlTrump";
             pnlTrump.Size = new Size(125, 61);
             pnlTrump.TabIndex = 38;
             // 
+            // btnNewGame
+            // 
+            btnNewGame.Location = new Point(7, 5);
+            btnNewGame.Name = "btnNewGame";
+            btnNewGame.Size = new Size(62, 60);
+            btnNewGame.TabIndex = 30;
+            btnNewGame.Text = "New Game";
+            btnNewGame.UseVisualStyleBackColor = true;
+            btnNewGame.Click += btnNewGame_Click;
+            // 
             // btnRequestAc
             // 
-            btnRequestAc.Location = new Point(541, 140);
+            btnRequestAc.Location = new Point(379, 187);
             btnRequestAc.Name = "btnRequestAc";
             btnRequestAc.Size = new Size(156, 60);
             btnRequestAc.TabIndex = 26;
@@ -259,7 +274,7 @@
             // 
             listBox2.FormattingEnabled = true;
             listBox2.ItemHeight = 15;
-            listBox2.Location = new Point(369, 86);
+            listBox2.Location = new Point(379, 12);
             listBox2.Name = "listBox2";
             listBox2.Size = new Size(156, 169);
             listBox2.TabIndex = 25;
@@ -267,7 +282,7 @@
             // CurrentType
             // 
             CurrentType.AutoSize = true;
-            CurrentType.Location = new Point(399, 30);
+            CurrentType.Location = new Point(780, 325);
             CurrentType.Name = "CurrentType";
             CurrentType.Size = new Size(163, 15);
             CurrentType.TabIndex = 36;
@@ -276,7 +291,7 @@
             // CurrentP
             // 
             CurrentP.AutoSize = true;
-            CurrentP.Location = new Point(566, 229);
+            CurrentP.Location = new Point(780, 376);
             CurrentP.Name = "CurrentP";
             CurrentP.Size = new Size(94, 15);
             CurrentP.TabIndex = 35;
@@ -297,16 +312,6 @@
             groupBox2.TabIndex = 34;
             groupBox2.TabStop = false;
             groupBox2.Text = "Team 2";
-            // 
-            // btnNewGame
-            // 
-            btnNewGame.Location = new Point(713, 6);
-            btnNewGame.Name = "btnNewGame";
-            btnNewGame.Size = new Size(75, 60);
-            btnNewGame.TabIndex = 30;
-            btnNewGame.Text = "New Game";
-            btnNewGame.UseVisualStyleBackColor = true;
-            btnNewGame.Click += btnNewGame_Click;
             // 
             // groupBox1
             // 
@@ -390,7 +395,7 @@
             // TrumP
             // 
             TrumP.AutoSize = true;
-            TrumP.Location = new Point(567, 253);
+            TrumP.Location = new Point(780, 400);
             TrumP.Name = "TrumP";
             TrumP.Size = new Size(93, 15);
             TrumP.TabIndex = 32;
@@ -400,7 +405,7 @@
             // 
             listBox5.FormattingEnabled = true;
             listBox5.ItemHeight = 15;
-            listBox5.Location = new Point(256, 274);
+            listBox5.Location = new Point(248, 281);
             listBox5.Name = "listBox5";
             listBox5.Size = new Size(242, 169);
             listBox5.TabIndex = 31;
@@ -412,17 +417,58 @@
             // TrumpT
             // 
             TrumpT.AutoSize = true;
-            TrumpT.Location = new Point(399, 53);
+            TrumpT.Location = new Point(780, 349);
             TrumpT.Name = "TrumpT";
             TrumpT.Size = new Size(129, 15);
             TrumpT.TabIndex = 38;
             TrumpT.Text = "Trump Type: Undefined";
             // 
+            // listBox3
+            // 
+            listBox3.FormattingEnabled = true;
+            listBox3.ItemHeight = 15;
+            listBox3.Location = new Point(567, 33);
+            listBox3.Name = "listBox3";
+            listBox3.Size = new Size(387, 199);
+            listBox3.TabIndex = 39;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(567, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(43, 21);
+            label1.TabIndex = 40;
+            label1.Text = "Chat";
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(567, 238);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(310, 44);
+            textBox1.TabIndex = 41;
+            // 
+            // btnSend
+            // 
+            btnSend.Location = new Point(883, 238);
+            btnSend.Name = "btnSend";
+            btnSend.Size = new Size(71, 44);
+            btnSend.TabIndex = 42;
+            btnSend.Text = "Send";
+            btnSend.UseVisualStyleBackColor = true;
+            btnSend.Click += btnSend_Click;
+            // 
             // MultiPlayer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 462);
+            ClientSize = new Size(1006, 462);
+            Controls.Add(btnSend);
+            Controls.Add(textBox1);
+            Controls.Add(label1);
+            Controls.Add(listBox3);
             Controls.Add(TrumpT);
             Controls.Add(btnRequestAc);
             Controls.Add(listBox2);
@@ -430,10 +476,11 @@
             Controls.Add(CurrentType);
             Controls.Add(CurrentP);
             Controls.Add(groupBox2);
-            Controls.Add(btnNewGame);
             Controls.Add(groupBox1);
             Controls.Add(TrumP);
             Controls.Add(listBox5);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "MultiPlayer";
             Text = "MultiPlayer";
             Load += MultiPlayer_Load;
@@ -488,5 +535,9 @@
         private BindingSource gameBindingSource;
         private Label lblPlayer;
         private Label TrumpT;
+        private ListBox listBox3;
+        private Label label1;
+        private TextBox textBox1;
+        private Button btnSend;
     }
 }

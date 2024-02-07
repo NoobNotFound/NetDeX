@@ -22,8 +22,8 @@ namespace Solitaire.App.Winforms
 
         private void btnNewGame_Click(object sender, EventArgs e)
         {
-            if(Program.ServerWithClient.IsHosted)
-            Program.ServerWithClient.NewGame();
+            if (Program.ServerWithClient.IsHosted)
+                Program.ServerWithClient.NewGame();
         }
 
         private async void btnShare_Click(object sender, EventArgs e)
@@ -36,7 +36,7 @@ namespace Solitaire.App.Winforms
         private async void ShuffleBtn_Click(object sender, EventArgs e)
         {
             ShuffleBtn.Enabled = false;
-           await Program.ServerWithClient.Shuffle((int)ShuffleTimes.Value);
+            await Program.ServerWithClient.Shuffle((int)ShuffleTimes.Value);
             ShuffleBtn.Enabled = true;
         }
 
@@ -87,6 +87,14 @@ namespace Solitaire.App.Winforms
                 listBox5.Items.Clear();
                 foreach (var item in Program.ServerWithClient.Engine.Data.CurrentRound)
                     listBox5.Items.Add(item);
+            };
+
+
+            Program.ServerWithClient.Messages.CollectionChanged += (_, _) =>
+            {
+                listBox3.Items.Clear();
+                foreach (var item in Program.ServerWithClient.Messages)
+                    listBox3.Items.Add(item);
             };
 
             listBox5.Items.Clear();
@@ -147,15 +155,25 @@ namespace Solitaire.App.Winforms
 
         private async void btnRequestAc_Click(object sender, EventArgs e)
         {
-            if(listBox2.SelectedItem == null) return;
+            if (listBox2.SelectedItem == null) return;
 
-            var d = ((string ipPort, int place,string name))listBox2.SelectedItem;
+            var d = ((string ipPort, int place, string name))listBox2.SelectedItem;
 
             if (d.ipPort != "") return;
 
             btnRequestAc.Enabled = false;
 
             await Program.ServerWithClient.RequestPlayer(d.place);
+        }
+
+        private async void btnSend_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
+                return;
+
+            btnSend.Enabled = false;
+            await Program.ServerWithClient.Chat(textBox1.Text);
+            btnSend.Enabled = true;
         }
     }
 }
