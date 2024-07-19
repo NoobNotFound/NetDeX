@@ -14,7 +14,7 @@ NetDeX is a a LAN-based multiplayer and single-player card game engine developed
 
 Clone the repository to your local machine.
    ```bash
-   git clone https://github.com/NoobNotFound/Solitaire.git
+   git clone https://github.com/NoobNotFound/NetDeX.git
    ```
 
 Alternatively, you can [go to releases](https://github.com/NoobNotFound/Solitaire/releases) to download the latest version of the game.
