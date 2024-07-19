@@ -1,4 +1,4 @@
-﻿using NetDeX.Games.Omi.Core.Helpers;
+﻿using NetDeX.Games.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,5 +1,5 @@
 ﻿using NetDeX.Games.Enums;
-using NetDeX.Games.Omi.Core.Helpers;
+using NetDeX.Games.Helpers;
 using NetDeX.Games.Omi.Enums;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetDeX.Games.Omi.Core.Helpers
+namespace NetDeX.Games.Helpers
 {
     public static class Extentions
     {
